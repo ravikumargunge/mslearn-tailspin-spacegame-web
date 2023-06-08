@@ -4,58 +4,39 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- '*'
+  - "*"
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 variables:
-  buildConfiguration: 'Release'
+  buildConfiguration: "Release"
 
 steps:
-- task: UseDotNet@2
-  displayName: 'Use .NET SDK 6.X'
-  inputs:
-    packageType: sdk
-    version: '6.x'
-- task: Npm@1
-  displayName: 'Run NPM install'
-  inputs:
-    verbose: false
-- script: './node_modules/.bin/node-sass Tailspin.SpaceGame.Web/wwwroot --output Tailspin.spaceGame.Web/wwwroot'
-  displayName: 'Compile Sass Assets'
-- task: gulp@1
-  displayName: 'Run gulp tasks'
-- script: 'echo "$(build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
-  displayName: 'Write build info'
-  workingDirectory: Tailspin.spaceGame.Web/wwwroot'
-- task: DotNetCoreCLI@2
-  displayName: 'Restore project dependencies'
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
-- task: DotNetCoreCLI@2
-  displayName: 'Build the project - release'
-  inputs:
-    command: 'build'
-    projects: '**/*.csproj'
-    arguments: '--no-restore --configuration Release'
-
-
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: UseDotNet@2
+    displayName: "Use .NET SDK 6.X"
+    inputs:
+      packageType: sdk
+      version: "6.x"
+  - task: Npm@1
+    displayName: "Run NPM install"
+    inputs:
+      verbose: false
+  - script: "./node_modules/.bin/node-sass Tailspin.SpaceGame.Web/wwwroot --output Tailspin.spaceGame.Web/wwwroot"
+    displayName: "Compile Sass Assets"
+  - task: gulp@1
+    displayName: "Run gulp tasks"
+  - script: 'echo "$(build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
+    displayName: "Write build info"
+    workingDirectory: Tailspin.spaceGame.Web/wwwroot'
+  - task: DotNetCoreCLI@2
+    displayName: "Restore project dependencies"
+    inputs:
+      command: "restore"
+      projects: "**/*.csproj"
+  - task: DotNetCoreCLI@2
+    displayName: "Build the project - release"
+    inputs:
+      command: "build"
+      projects: "**/*.csproj"
+      arguments: "--no-restore --configuration Release"
